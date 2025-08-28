@@ -66,3 +66,13 @@ ul li.selected {
 ul li.selected > a {
   background-color: #e0e0e0;
 }
+
+.message {
+  color: green;
+  font-weight: bold;
+}
+
+.errors {
+  color: red;
+  font-weight: bold;
+}

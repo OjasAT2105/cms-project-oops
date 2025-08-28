@@ -1,31 +1,23 @@
 <?php
+
 class Database {
     private $connection;
-    private static $instance;
-    private function __construct() {
+
+    public function __construct() {
         $this->open_connection();
     }
 
-    public static function getInstance() {
-        if (!isset(self::$instance)) {
-            self::$instance = new Database();
-        }
-        return self::$instance;
-    }
-
-    public function getConnection() {
-        return $this->connection;
-    }
-
     private function open_connection() {
-        $this->connection = new mysqli("localhost", "root", "", "widget_corp");
-        if ($this->connection->connect_errno) {
+        $this->connection = new mysqli(DB_SERVER, DB_USER, DB_PASS, DB_NAME);
+
+        if ($this->connection->connect_error) {
             die("Database connection failed: " . $this->connection->connect_error);
         }
     }
 
     public function query($sql) {
         $result = $this->connection->query($sql);
+
         if (!$result) {
             die("Database query failed: " . $this->connection->error);
         }
@@ -36,11 +28,25 @@ class Database {
         return $this->connection->real_escape_string($value);
     }
 
-    public function close_connection() {
+    public function fetch_array($result) {
+        return $result->fetch_assoc();
+    }
+
+    public function num_rows($result) {
+        return $result->num_rows;
+    }
+
+    public function insert_id() {
+        return $this->connection->insert_id;
+    }
+
+    public function affected_rows() {
+        return $this->connection->affected_rows;
+    }
+
+    public function __destruct() {
         if (isset($this->connection)) {
             $this->connection->close();
-            unset($this->connection);
         }
     }
 }
-?>
